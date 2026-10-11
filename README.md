@@ -173,7 +173,7 @@ channel alone: mute or solo-out the other channels to look at one.
   the PC's bridge (`http://<pc>:8600/`); the phone app's own bridge has none.
 - Recording runs only while a channel page with RTA on is open, and stops
   five seconds after the last one closes.
-- `AudioTap.exe` in the project folder does the recording; `guiuild.bat`
+- `AudioTap.exe` in the project folder does the recording; `gui\build.bat`
   builds it along with the window.
 
 ## Connection drops
