@@ -8,6 +8,8 @@ android/local.properties
 android/third_party/
 *.apk
 *.exe
+!/MixerBridge.exe
+!/AudioTap.exe
 *.zip
 
 # Signing key of the Android app: keep it off the internet
