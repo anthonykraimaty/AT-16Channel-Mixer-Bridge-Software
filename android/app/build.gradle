@@ -1,0 +1,107 @@
+plugins {
+    id 'com.android.application'
+}
+
+// The bridge itself (the same files that run on a computer) travels inside
+// the app as one archive and is unpacked on the device.
+def bridgeAssets = layout.buildDirectory.dir('bridge-assets')
+
+def bridgeZip = tasks.register('bridgeZip', Zip) {
+    from(rootProject.file('..')) {
+        include 'server/**'
+        include 'public/**'
+        include 'package.json'
+        include 'node_modules/ws/**'
+    }
+    archiveFileName = 'bridge.zip'
+    destinationDirectory = bridgeAssets
+}
+
+def bridgeStamp = tasks.register('bridgeStamp') {
+    def out = bridgeAssets.map { it.file('bridge.version') }
+    inputs.files(bridgeZip)
+    outputs.file(out)
+    doLast {
+        // Changes whenever the archive does, so the app knows to unpack again.
+        def digest = java.security.MessageDigest.getInstance('SHA-256')
+        bridgeZip.get().archiveFile.get().asFile.withInputStream { s ->
+            byte[] buf = new byte[65536]
+            int n
+            while ((n = s.read(buf)) > 0) digest.update(buf, 0, n)
+        }
+        out.get().asFile.text = digest.digest().encodeHex().toString()
+    }
+}
+
+android {
+    namespace 'app.mixerbridge'
+    compileSdk 34
+    ndkVersion '28.2.13676358'
+
+    defaultConfig {
+        applicationId 'app.mixerbridge'
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName '1.0'
+
+        ndk {
+            // Phones and tablets, Chromebooks and emulators.
+            abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64'
+        }
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_STL=c++_shared'
+            }
+        }
+    }
+
+    signingConfigs {
+        bridge {
+            storeFile rootProject.file('mixer-bridge.jks')
+            storePassword 'mixerbridge'
+            keyAlias 'bridge'
+            keyPassword 'mixerbridge'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.bridge
+        }
+        debug {
+            signingConfig signingConfigs.bridge
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+            version '3.22.1'
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = [rootProject.file('third_party/nodejs-mobile/bin')]
+            assets.srcDir(bridgeAssets)
+        }
+    }
+
+    packaging {
+        jniLibs {
+            // Stored compressed: the Node runtime is 60 MB per processor type.
+            useLegacyPackaging = true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+tasks.named('preBuild') {
+    dependsOn bridgeZip, bridgeStamp
+}

@@ -1,0 +1,20 @@
+# Dependencies and build outputs
+node_modules/
+android/.gradle/
+android/build/
+android/app/build/
+android/app/.cxx/
+android/local.properties
+android/third_party/
+*.apk
+*.exe
+*.zip
+
+# Signing key of the Android app: keep it off the internet
+*.jks
+
+# Data made in use, recordings and photos from the study
+data/
+captures/
+Mixer Manual Book Scan/
+.playwright-mcp/

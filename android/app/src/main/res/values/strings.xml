@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mixer</string>
+    <string name="starting">Starting the bridge…</string>
+    <string name="not_starting">The bridge did not start. Close the app and open it again.</string>
+    <string name="channel_name">Bridge</string>
+    <string name="channel_description">Shown while the app keeps the connection to the mixer.</string>
+    <string name="notification_title">Mixer bridge is running</string>
+    <string name="notification_address">Other devices: http://%1$s:%2$d</string>
+    <string name="notification_no_network">Not on a network</string>
+    <string name="action_stop">Stop</string>
+    <string name="saved">Saved %1$s to Downloads</string>
+    <string name="not_saved">Could not save %1$s</string>
+</resources>
