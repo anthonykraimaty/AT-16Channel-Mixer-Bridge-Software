@@ -18,7 +18,9 @@ disliked its built-in web interface, a 5 MB canvas/WASM page. This project is:
 - an **Android app** (`MixerBridge.apk`) with the same bridge and interface
   inside, on nodejs-mobile.
 
-The folder is not a git repository.
+The folder is a git repository, pushed to
+https://github.com/anthonykraimaty/AT-16Channel-Mixer-Bridge-Software (`main`).
+`.gitignore` keeps out the signing key, builds, `data/` and `captures/`.
 
 ## The mixer is live equipment
 
